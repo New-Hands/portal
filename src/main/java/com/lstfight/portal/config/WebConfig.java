@@ -18,7 +18,7 @@ import java.util.List;
  */
 @Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = "com.lstfight")
+@ComponentScan(basePackages = "com.lstfight.*")
 public class WebConfig extends WebMvcConfigurerAdapter {
 
     /**

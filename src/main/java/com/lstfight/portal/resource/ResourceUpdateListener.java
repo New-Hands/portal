@@ -1,7 +1,6 @@
 package com.lstfight.portal.resource;
 
 import com.lstfight.portal.dao.*;
-import com.lstfight.portal.entity.SysResourceEntity;
 import com.lstfight.portal.entity.SysRoleEntity;
 import com.lstfight.portal.entity.SysUserEntity;
 import com.lstfight.portal.entity.SysUserRoleEntity;
@@ -9,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
+
 
 
 /**
@@ -21,23 +21,25 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class ResourceUpdateListener implements ApplicationListener<ContextRefreshedEvent> {
-    @Autowired
-    ResourcePostScan authorityPostScan;
+    private final ResourcePostScan authorityPostScan;
+
+    private final SysResourceDao sysResourceDao;
+
+    private final SysRoleDao sysRoleDao;
+
+    private final SysUserDao sysUserDao;
+
+    private final SysUserRoleDao sysUserRoleDao;
+
 
     @Autowired
-    SysResourceDao sysResourceDao;
-
-    @Autowired
-    SysRoleDao sysRoleDao;
-
-    @Autowired
-    SysUserDao sysUserDao;
-
-    @Autowired
-    SysUserRoleDao sysUserRoleDao;
-
-    @Autowired
-    SysResourceRoleDao sysResourceRoleDao;
+    public ResourceUpdateListener(ResourcePostScan authorityPostScan, SysResourceDao sysResourceDao, SysRoleDao sysRoleDao, SysUserDao sysUserDao, SysUserRoleDao sysUserRoleDao) {
+        this.authorityPostScan = authorityPostScan;
+        this.sysResourceDao = sysResourceDao;
+        this.sysRoleDao = sysRoleDao;
+        this.sysUserDao = sysUserDao;
+        this.sysUserRoleDao = sysUserRoleDao;
+    }
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
@@ -65,17 +67,15 @@ public class ResourceUpdateListener implements ApplicationListener<ContextRefres
                 userEntity = sysUserDao.save(newUserEntity);
             }
 
+            //新建用户角色 判读 重复存入会回滚
             SysUserRoleEntity userRoleEntity = sysUserRoleDao.findALLByUserNameAndRoleName("admin", "admin");
             if (userRoleEntity == null) {
-                //新建用户角色 判读 重复存入会回滚
                 sysUserRoleDao.save(new SysUserRoleEntity(roleEntity.getRoleName(), userEntity.getUserName(), (byte) 1));
             }
 
             //新建资源
             sysResourceDao.deleteAll();
-
             authorityPostScan.resourceEntities.forEach(entity -> sysResourceDao.save(entity));
-            // sysResourceDao.save(authorityPostScan.resourceEntities.get(1));
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.lstfight.portal.config;
 
 import org.springframework.context.annotation.*;
-import org.springframework.data.web.config.EnableSpringDataWebSupport;
 
 /**
  * @date 2018/8/3 0003 10:00
@@ -11,7 +10,5 @@ import org.springframework.data.web.config.EnableSpringDataWebSupport;
  *
  */
 @Configuration
-@ComponentScan(basePackages = "com.lstfight")
-@EnableSpringDataWebSupport
 public class RootConfig {
 }

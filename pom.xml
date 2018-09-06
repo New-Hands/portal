@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>portal</artifactId>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <!-- 引入web层依赖 -->
     <dependencies>
